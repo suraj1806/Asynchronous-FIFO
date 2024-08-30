@@ -1,0 +1,87 @@
+module tb_asyfifo;
+
+  // Parameters
+  localparam FIFO_DEPTH = 8;
+  
+  // Inputs
+  reg wr_clk;
+  reg rd_clk;
+  reg rst;
+  reg wr_en;
+  reg rd_en;
+  reg [7:0] write_data;
+
+  // Outputs
+  wire [7:0] read_data;
+  wire empty;
+  wire full;
+  
+  // Instantiate the Unit Under Test (UUT)
+  asyfifo uut (
+    .wr_clk(wr_clk), 
+    .rd_clk(rd_clk), 
+    .rst(rst), 
+    .wr_en(wr_en), 
+    .rd_en(rd_en), 
+    .write_data(write_data), 
+    .read_data(read_data), 
+    .empty(empty), 
+    .full(full)
+  );
+
+  // Clock generation for wr_clk (write clock)
+  initial begin
+    wr_clk = 0;
+    forever #5 wr_clk = ~wr_clk;  // 10 ns clock period
+  end
+  
+  // Clock generation for rd_clk (read clock)
+  initial begin
+    rd_clk = 0;
+    forever #7 rd_clk = ~rd_clk;  // 14 ns clock period
+  end
+  integer i;
+  // Test sequence
+  initial begin
+    // Initialize inputs
+    rst = 1;
+    wr_en = 0;
+    rd_en = 0;
+    write_data = 8'h00;
+    
+    // Reset the FIFO
+    #15;
+    rst = 0;
+    
+    // Start writing data to FIFO
+   wr_en=1;
+        rd_en=0;
+        for(i=0;i<8;i=i+1)begin
+        write_data=i;
+       #10;
+        end 
+   wr_en=0;
+   rd_en=1;
+    for(i=0;i<8;i=i+1)
+     begin
+     #10;                 
+     end 
+   wr_en=1;
+   rd_en=0;
+   for(i=0;i<8;i=i+1)
+         begin
+         write_data=i;
+         #10;
+         end 
+         wr_en=0;
+         rd_en=1;
+   for(i=0;i<8;i=i+1)
+         begin
+         #10;
+         end 
+  #10;
+  #10;
+  #100;
+  $finish;
+  end
+endmodule
