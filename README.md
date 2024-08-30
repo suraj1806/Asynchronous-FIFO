@@ -1,6 +1,6 @@
 # Asynchronous-FIFO
 
-Project Overview
+
 This project implements an Asynchronous FIFO (First-In-First-Out) memory module with the following specifications:
 
 Depth: 8 entries
